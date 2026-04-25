@@ -73,20 +73,26 @@ For **Windows**, download the installer from [cloud.google.com/sdk/docs/install]
 ### What is an AI Agent?
 An AI agent is a system that can perceive input, make decisions, and take actions toward a goal, using an LLM as its "brain." While models just predict text, **agents decide what to do next**.
 
+### AI Agent Core Architecture
+To build production-grade agents, we must understand their cognitive architecture. A complete agent system typically consists of four pillars:
+1. **The Brain (LLM)**: The core reasoning engine. It processes inputs and decides on the next sequence of actions using techniques like Chain-of-Thought (CoT) or ReAct.
+2. **Memory (State)**: 
+   - *Short-term memory*: Context windows, session state, and conversational history.
+   - *Long-term memory*: Vector databases and retrieval-augmented generation (RAG) to recall past facts.
+3. **Tools (Actuators)**: External functions the agent can call to interact with the world (e.g., searching the web, querying a database, executing code).
+4. **Planning & Orchestration**: The capability to break down complex goals into sub-tasks, delegate them to specialized sub-agents, and reflect on errors to self-correct.
+
 ### The Agent Ecosystem (Theory)
 Before we write code, let's understand the landscape.
-* **LangChain**: The most popular framework. Good for everything, but can be overly complex for simple tasks.
-* **CrewAI**: Specialized for multi-agent role-playing (like setting up a virtual company).
-* **AutoGPT / BabyAGI**: Autonomous loops that try to solve open-ended goals (often brittle).
-* **Semantic Router**: Very fast tools that bypass LLMs to route queries safely.
-
-*For this workshop, we use the **Google Agent Development Kit (ADK)** because it is incredibly lightweight, intuitive, and integrates perfectly with Vertex AI.*
+* **LangChain / LangGraph**: The most popular framework. Highly customizable graph-based state machines, but can be overly complex for simple tasks.
+* **CrewAI / AutoGen**: Specialized for multi-agent role-playing and team collaboration.
+* **Google Agent Development Kit (ADK)**: Incredibly lightweight, intuitive, and integrates perfectly with Vertex AI. *This is what we use today.*
 
 ### The Universal Agent Loop (The Secret Sauce)
-No matter the framework, almost all agents run on this loop:
-1. **Think**: LLM analyzes state.
-2. **Choose Tool**: LLM decides which function to use.
-3. **Observe**: We execute the tool and pass the result back to the LLM.
+No matter the framework, almost all agents run on this execution loop:
+1. **Think**: LLM analyzes state and current observations.
+2. **Choose Tool**: LLM decides which function to use and formats the parameters.
+3. **Observe**: We execute the tool, parse the result, and pass the observation back to the LLM.
 
 ---
 

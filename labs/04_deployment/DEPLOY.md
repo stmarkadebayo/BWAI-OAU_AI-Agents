@@ -11,9 +11,20 @@ Cloud Run takes a Docker container and automatically deploys it as a scalable, s
 
 ```mermaid
 graph LR
-    A[Your Laptop<br/>Local Code] -->|gcloud run deploy| B(Google Cloud Build)
-    B --> C[Cloud Run]
-    C -->|Public URL| D((The World))
+    subgraph Local Environment
+        A[Your Laptop<br/>Local adk web code] -->|gcloud run deploy| B(CLI Authentication)
+    end
+    
+    subgraph Google Cloud Platform
+        B --> C[Cloud Build<br/>Compiles Dockerfile]
+        C --> D{Artifact Registry<br/>Stores Image}
+        D --> E[Cloud Run Service<br/>Serverless Container]
+    end
+    
+    E -->|HTTPS Public URL| F((The World))
+    
+    style E fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style F fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
 ```
 
 ## 🛠️ Step-by-Step Deployment

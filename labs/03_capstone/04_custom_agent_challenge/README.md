@@ -32,6 +32,14 @@ graph TD
 3. **Add your new sub-agent to the `root_agent`'s team**.
 4. **Modify the `instruction`**: Ensure the `root_agent` knows how to use your new team member!
 
+## 💡 Cool Project Ideas to Try
+Need inspiration? Here are some fun ideas to build right now:
+
+*   **The GitHub Repo Roaster 🔥**: Write a tool that hits the public GitHub API to fetch a user's repositories. Give the agent a "Grumpy Senior Dev" persona and tell it to roast their commit messages!
+*   **The Resume Review Panel**: Create two sub-agents: a *Strict Recruiter* and a *Friendly Career Coach*. Give them tools to review a text resume and debate each other.
+*   **Live Crypto Analyst**: Write a tool that calls a free API like CoinGecko. Ask the agent "Should I buy Bitcoin today?" and watch it fetch the live price before giving dramatic financial advice.
+*   **The Dungeon Master**: Use ADK's `ToolContext` session state to build a text-adventure game agent that remembers your health and inventory as you explore a cave!
+
 ## 🚀 How to Run
 ```bash
 adk web 03_capstone/04_custom_agent_challenge

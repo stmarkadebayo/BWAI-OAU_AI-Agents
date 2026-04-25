@@ -11,21 +11,27 @@ Instead of one "God Agent", we create a corporate structure. We build a Manager 
 
 ```mermaid
 graph TD
-    User((User)) -->|Complex Query| Root[CEO / Root Agent]
+    User([User]) -->|Complex Prompt| Root[CEO Root Agent]
     
-    subgraph Specialists
-        Root -->|Delegate Web Search| R[Researcher Agent]
-        Root -->|Delegate Formatting| W[Writer Agent]
-        R -.->|Passes Facts| Root
-        W -.->|Passes Draft| Root
+    subgraph Multi-Agent Orchestration
+        Root -->|Task 1: Research Topic| R[Researcher Agent]
+        R -->|Search Query| SearchTool((Web Search Tool))
+        SearchTool -->|Search Results| R
+        R -->|Synthesize Data| Root
+        
+        Root -->|Task 2: Draft Document| W[Writer Agent]
+        W -->|Format Request| FormatTool((Formatting Tool))
+        FormatTool -->|Markdown| W
+        W -->|Final Draft| Root
     end
-
-    R --> T1((Web Search Tool))
-    Root -->|Final Answer| User
     
-    style Root fill:#f9f,stroke:#333,stroke-width:2px
-    style R fill:#bbf,stroke:#333
-    style W fill:#bbf,stroke:#333
+    Root -->|Review & Combine| FinalCheck{Quality Check}
+    FinalCheck -->|Pass| Output([Final Delivered Response])
+    FinalCheck -->|Fail| Root
+    
+    style Root fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#fff
+    style R fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style W fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
 ```
 
 ## 💻 In This Lab

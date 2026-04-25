@@ -11,18 +11,24 @@ In ADK, every conversation happens inside a **Session**. Each session has a **st
 ```mermaid
 sequenceDiagram
     participant User
-    participant Agent
-    participant State (Memory)
+    participant Agent as Agent Engine
+    participant Context as ToolContext (ADK)
+    participant State as Memory Store (JSON)
 
     User->>Agent: "My name is Tobi"
-    Note right of Agent: THOUGHT: User shared their name.<br/>I should save this.
-    Agent->>State (Memory): remember_fact(key="name", value="Tobi")
-    State (Memory)-->>Agent: ✅ Saved!
+    Note right of Agent: Cognitive Step:<br/>Identify entity (Name: Tobi)<br/>Decision: Update State
+    Agent->>Context: Call tool to save memory
+    Context->>State: Write {"name": "Tobi"} to Session Data
+    State-->>Context: Acknowledge write
+    Context-->>Agent: Action successful
     Agent-->>User: "Nice to meet you, Tobi!"
 
     User->>Agent: "What do you know about me?"
-    Agent->>State (Memory): recall_memory()
-    State (Memory)-->>Agent: {name: "Tobi"}
+    Agent->>Context: Fetch session data
+    Context->>State: Read Session Data
+    State-->>Context: Return {"name": "Tobi"}
+    Context-->>Agent: Inject data into prompt context
+    Note right of Agent: Cognitive Step:<br/>Synthesize memory data<br/>Formulate response
     Agent-->>User: "I know your name is Tobi!"
 ```
 

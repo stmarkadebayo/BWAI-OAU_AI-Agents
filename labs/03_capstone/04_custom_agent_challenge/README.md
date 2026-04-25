@@ -13,13 +13,18 @@ Your challenge is to combine these concepts to build a **Custom Agent System** t
 You will open `agent.py` and fill in the missing `# TODO:` sections.
 
 ```mermaid
-graph LR
-    A[Step 1:<br/>Build Tool] --> B[Step 2:<br/>Build Expert Agent]
-    B --> C[Step 3:<br/>Attach to CEO]
+graph TD
+    subgraph Sandbox Architecture
+        A[Step 1: Python Tool<br/>(def fetch_data...)] -->|Bind to Agent| B[Step 2: Domain Expert Agent<br/>(Persona + Tool)]
+        B -->|Bind as AgentTool| C[Step 3: CEO Root Agent<br/>(Orchestrator)]
+    end
     
-    style A fill:#dfd,stroke:#333
-    style B fill:#ffd,stroke:#333
-    style C fill:#fdd,stroke:#333
+    C -->|Dispatches task based on<br/>user prompt intent| B
+    B -->|Executes| A
+    
+    style A fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style B fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    style C fill:#fce4ec,stroke:#c2185b,stroke-width:2px
 ```
 
 1. **Write a custom python tool**: Think of something cool (e.g., fetching a stock price, generating a random OAU student persona, simulating a dice roll).

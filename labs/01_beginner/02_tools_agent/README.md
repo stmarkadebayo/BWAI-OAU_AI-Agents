@@ -12,16 +12,21 @@ To use a tool, the agent must execute a specific cognitive pattern known as **Re
 ```mermaid
 sequenceDiagram
     participant User
-    participant Agent
-    participant Tool (Python Function)
+    participant Agent as Agent (LLM Engine)
+    participant Parser as Tool Parser (ADK)
+    participant Tool as Tool (Python API)
+    participant Internet as External API
 
-    User->>Agent: "Do I need an umbrella in London?"
-    Note right of Agent: THOUGHT: I don't know the weather.<br/>I should use the get_weather tool.
-    Agent->>Tool: get_weather(city="London")
-    Note over Tool: *Executes Python Code*
-    Tool-->>Agent: Result: "It is rainy."
-    Note right of Agent: THOUGHT: I now have the answer.<br/>I will tell the user.
-    Agent-->>User: "Yes, it's currently rainy in London, so take an umbrella!"
+    User->>Agent: "Tell me a fun fact!"
+    Note right of Agent: THOUGHT: I don't have this in my weights.<br/>I should use the get_random_fact tool.
+    Agent->>Parser: Action: get_random_fact()
+    Parser->>Tool: Execute Python function
+    Tool->>Internet: HTTP GET /random-fact
+    Internet-->>Tool: JSON Response { "fact": "..." }
+    Tool-->>Parser: Stringified output
+    Parser-->>Agent: Observation: "Bananas are berries."
+    Note right of Agent: THOUGHT: I have the fact.<br/>I will formulate a human-friendly response.
+    Agent-->>User: "Here is a fun fact: Did you know bananas are technically berries?"
 ```
 
 ## 💻 In This Lab

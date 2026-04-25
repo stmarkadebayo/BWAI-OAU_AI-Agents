@@ -10,22 +10,35 @@ Callbacks are functions that "hook into" the agent's lifecycle. They run automat
 
 ```mermaid
 graph TD
-    A[User Input] --> B{before_model_callback}
-    B -->|Returns None| C[🧠 LLM Processes Request]
-    B -->|Returns LlmResponse| D[⛔ LLM Skipped!]
-    C --> E{after_model_callback}
-    E --> F[Agent Chooses Tool?]
+    User((User)) -->|Input Request| Gateway[API Gateway]
+    Gateway --> B{before_model_callback}
+    
+    subgraph Pre-Processing
+        B -->|Scan for PII| Check1[PII Filter]
+        B -->|Scan for Malice| Check2[Toxicity Filter]
+    end
+    
+    Check1 --> Eval{Safe?}
+    Check2 --> Eval
+    
+    Eval -->|No: Returns LlmResponse| Reject[⛔ Block Request]
+    Reject --> Output([Safe Output to User])
+    
+    Eval -->|Yes: Returns None| LLM[🧠 LLM Core Engine]
+    LLM --> E{after_model_callback}
+    
+    E -->|Format / Validate| F[Agent Chooses Tool?]
     F -->|Yes| G{before_tool_callback}
     G --> H[Execute Tool]
     H --> I{after_tool_callback}
-    I --> C
-    F -->|No| J[Final Response to User]
-    D --> J
+    I --> LLM
     
-    style B fill:#f96,stroke:#333,stroke-width:2px
-    style D fill:#f66,stroke:#333,stroke-width:2px
-    style G fill:#ff9,stroke:#333
-    style I fill:#ff9,stroke:#333
+    F -->|No| J[Final Response Generator]
+    J --> Output
+    
+    style B fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style Reject fill:#ffcdd2,stroke:#c62828,stroke-width:2px
+    style LLM fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
 ```
 
 ## 🛡️ The Guardrail Pattern

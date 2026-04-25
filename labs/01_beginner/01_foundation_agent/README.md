@@ -13,14 +13,28 @@ Under the hood, almost every agent framework (LangChain, ADK, AutoGPT) runs a va
 
 ```mermaid
 graph TD
-    A[User Input] --> B(Think: What should I do?)
-    B --> C{Need a Tool?}
-    C -->|No| D[Generate Final Response]
-    C -->|Yes| E[Choose Action]
-    E --> F[Execute Tool]
-    F --> G(Observe Result)
-    G --> B
-    D --> H[Output to User]
+    User([User Input]) --> Gateway[Input Processor]
+    Gateway --> LLM{LLM Core Engine}
+    
+    subgraph Cognitive Architecture
+        LLM -->|Analyze Intent| Context[Context Retrieval]
+        Context --> LLM
+        LLM -->|Formulate Plan| Plan[Action Planner]
+        Plan --> Decision{Need External Data?}
+    end
+    
+    Decision -->|No| Gen[Generate Final Response]
+    Decision -->|Yes| Select[Select Appropriate Tool]
+    Select --> Exec[Execute Tool via API/Function]
+    Exec --> Obs[Observe Result]
+    Obs --> LLM
+    
+    Gen --> Output([Final Output])
+    
+    classDef core fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef internal fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    class LLM core;
+    class Context,Plan internal;
 ```
 
 ## 💻 In This Lab
